@@ -1,3 +1,13 @@
 Inverse Kinematics:
     -procedural animations
-    
+    Setup: 
+        -rig builder attached to root gameobject along with animator component
+            -bone hierarchy and armature are a collection of bones, child of root
+        -custom rigs for each IK setup we want, children of root
+        Example:
+            Target Tracking Rig:
+                -Head Constraint
+            Climbing Rig:
+                -arm constraints
+                -leg constraints
+    This setup will override keyframe values of pre-made animations as needed
