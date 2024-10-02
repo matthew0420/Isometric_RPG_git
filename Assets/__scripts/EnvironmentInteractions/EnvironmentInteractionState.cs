@@ -9,4 +9,23 @@ public abstract class EnvironmentInteractionState : BaseState<EnvironmentInterac
     {
         Context = context;
     }
+
+    private Vector3 GetClosestPointOnCollider(Collider intersectingCollider, Vector3 positionToCheck)
+    {
+        return intersectingCollider.ClosestPoint(positionToCheck);
+    }
+
+    protected void StartIKTargetPositionTracking(Collider intersectingCollider)
+    {
+        Vector3 closestPointFromRoot = GetClosestPointOnCollider(intersectingCollider, Context.RootTransform.position);
+        Context.SetCurrentSide(closestPointFromRoot);
+    }
+    protected void UpdateIKTargetPositionTracking(Collider intersectingCollider)
+    {
+        
+    }
+    protected void ResetIKTargetPositionTracking(Collider intersectingCollider)
+    {
+        
+    }
 }

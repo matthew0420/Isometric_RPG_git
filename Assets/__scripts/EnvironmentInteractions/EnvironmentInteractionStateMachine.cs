@@ -31,8 +31,9 @@ public class EnvironmentInteractionStateMachine : StateManager<EnvironmentIntera
         ValidateConstraints();
 
         _context = new EnvironmentInteractionContext(_leftIKConstraint, _leftMultiRotationConstraint,
-            _rightIKConstraint, _rightMultiRotationConstraint, _rigidbody, _rootCollider);
+            _rightIKConstraint, _rightMultiRotationConstraint, _rigidbody, _rootCollider, transform.root);
         InitializeStates();
+        ConstructEnvironmentDetectionCollider();
     }
     
     //error checking for serialize field assignments above
@@ -55,5 +56,16 @@ public class EnvironmentInteractionStateMachine : StateManager<EnvironmentIntera
         States.Add(EEnvironmentInteractionState.Rise, new RiseState(_context, EEnvironmentInteractionState.Rise));
         States.Add(EEnvironmentInteractionState.Touch, new TouchState(_context, EEnvironmentInteractionState.Touch));
         CurrentState = States[EEnvironmentInteractionState.Reset];
+    }
+    
+    //get reach of character, create collision detection for wall hand placement
+    private void ConstructEnvironmentDetectionCollider()
+    {
+        //setting a trigger collider to be in front of the player and at arm's length width for wall interactions
+        float wingspan = _rootCollider.height;
+        BoxCollider boxCollider = gameObject.AddComponent<BoxCollider>();
+        boxCollider.size = new Vector3(wingspan, wingspan, wingspan);
+        boxCollider.center = new Vector3(_rootCollider.center.x, _rootCollider.center.y + (.50f * wingspan), _rootCollider.center.z + (.5f * wingspan));
+        boxCollider.isTrigger = true;
     }
 }
