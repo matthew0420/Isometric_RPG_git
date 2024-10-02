@@ -22,6 +22,14 @@ public class SearchState : EnvironmentInteractionState
     {
         StartIKTargetPositionTracking(other);
     }
-    public override void OnTriggerStay(Collider other){}
-    public override void OnTriggerExit(Collider other){}
+
+    public override void OnTriggerStay(Collider other)
+    {
+        UpdateIKTargetPosition(other);
+    }
+
+    public override void OnTriggerExit(Collider other)
+    {
+        ResetIKTargetPositionTracking(other);
+    }
 }

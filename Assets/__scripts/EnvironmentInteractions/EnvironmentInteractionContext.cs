@@ -17,6 +17,7 @@ public class EnvironmentInteractionContext
     private CapsuleCollider _rootCollider;
     private Transform _rootTransform;
 
+    private float _characterShoulderHeight;
     //constructor
     public EnvironmentInteractionContext(TwoBoneIKConstraint leftIKConstraint, MultiRotationConstraint leftMultiRotationConstraint, 
         TwoBoneIKConstraint rightIKConstraint, MultiRotationConstraint rightMultiRotationConstraint, Rigidbody rigidbody, CapsuleCollider rootCollider, Transform rootTransform)
@@ -28,6 +29,8 @@ public class EnvironmentInteractionContext
         _rigidbody = rigidbody;
         _rootCollider = rootCollider;
         _rootTransform = rootTransform;
+        
+        _characterShoulderHeight = leftIKConstraint.data.root.transform.position.y;
     }
     
     //read only context properties
@@ -38,8 +41,12 @@ public class EnvironmentInteractionContext
     public Rigidbody Rb => _rigidbody;
     public CapsuleCollider Rootcollider => _rootCollider;
     public Transform RootTransform => _rootTransform;
+    public Vector3 ClosestPointOnColliderFromShoulder { get; set; } = Vector3.positiveInfinity;
+
+    public float CharacterShoulderHeight => _characterShoulderHeight;
     
     //current tracking for which side of body to activate hand-to-wall interaction
+    public Collider CurrentIntersectingCollider { get; set; }
     public TwoBoneIKConstraint CurrentIKConstraint { get; private set; }
     public MultiRotationConstraint CurrentMultiRotationConstraint { get; private set; }
     public Transform CurrentIKTargetTransform { get; private set; }
