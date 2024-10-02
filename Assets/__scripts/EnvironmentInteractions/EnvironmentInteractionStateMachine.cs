@@ -25,15 +25,17 @@ public class EnvironmentInteractionStateMachine : StateManager<EnvironmentIntera
     [SerializeField] private MultiRotationConstraint _rightMultiRotationConstraint;
     [SerializeField] private Rigidbody _rigidbody;
     [SerializeField] private CapsuleCollider _rootCollider;
+    [SerializeField] private Rig _environmentInteractionRig;
+    [SerializeField] private BoxCollider boxCollider;
 
     private void Awake()
     {
         ValidateConstraints();
 
         _context = new EnvironmentInteractionContext(_leftIKConstraint, _leftMultiRotationConstraint,
-            _rightIKConstraint, _rightMultiRotationConstraint, _rigidbody, _rootCollider, transform.root);
+            _rightIKConstraint, _rightMultiRotationConstraint, _rigidbody, _rootCollider, transform.root, _environmentInteractionRig);
         InitializeStates();
-        ConstructEnvironmentDetectionCollider();
+        //ConstructEnvironmentDetectionCollider();
     }
     
     //error checking for serialize field assignments above
@@ -59,7 +61,7 @@ public class EnvironmentInteractionStateMachine : StateManager<EnvironmentIntera
     }
     
     //get reach of character, create collision detection for wall hand placement
-    private void ConstructEnvironmentDetectionCollider()
+    /*private void ConstructEnvironmentDetectionCollider()
     {
         //setting a trigger collider to be in front of the player and at arm's length width for wall interactions
         float wingspan = _rootCollider.height;
@@ -67,5 +69,5 @@ public class EnvironmentInteractionStateMachine : StateManager<EnvironmentIntera
         boxCollider.size = new Vector3(wingspan, wingspan, wingspan);
         boxCollider.center = new Vector3(_rootCollider.center.x, _rootCollider.center.y + (.50f * wingspan), _rootCollider.center.z + (.5f * wingspan));
         boxCollider.isTrigger = true;
-    }
+    }*/
 }

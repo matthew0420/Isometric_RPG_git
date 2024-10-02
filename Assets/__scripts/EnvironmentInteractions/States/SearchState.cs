@@ -15,6 +15,12 @@ public class SearchState : EnvironmentInteractionState
     //generic return with placeholder type
     public override EnvironmentInteractionStateMachine.EEnvironmentInteractionState GetNextState()
     {
+        if (Context.CurrentIntersectingCollider != null)  // If wall detected
+        {
+            return EnvironmentInteractionStateMachine.EEnvironmentInteractionState.Touch;
+        }
+    
+        // Stay in SearchState
         return StateKey;
     }
 
