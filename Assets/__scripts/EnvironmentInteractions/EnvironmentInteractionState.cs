@@ -20,9 +20,12 @@ public abstract class EnvironmentInteractionState : BaseState<EnvironmentInterac
         if (intersectingCollider.gameObject.layer == LayerMask.NameToLayer("Interactable") && Context.CurrentIntersectingCollider == null)
         {
             Context.CurrentIntersectingCollider = intersectingCollider;
+        }
+
+        if (intersectingCollider.gameObject.layer == LayerMask.NameToLayer("Interactable") && Context.CurrentIntersectingCollider != null)
+        {
             Vector3 closestPointFromRoot = GetClosestPointOnCollider(intersectingCollider, Context.RootTransform.position);
             Context.SetCurrentSide(closestPointFromRoot);
-            
             SetIKTargetPosition();
         }
     }
@@ -45,7 +48,7 @@ public abstract class EnvironmentInteractionState : BaseState<EnvironmentInterac
     private void SetIKTargetPosition()
     {
         Context.ClosestPointOnColliderFromShoulder = GetClosestPointOnCollider(Context.CurrentIntersectingCollider, 
-            new Vector3(Context.CurrentShoulderTransform.position.x, Context.CharacterShoulderHeight, Context.CurrentShoulderTransform.position.z));
+            new Vector3(Context.CurrentShoulderTransform.position.x, Context.CharacterShoulderHeight.transform.position.y-0.2f, Context.CurrentShoulderTransform.position.z));
         Vector3 rayDirection = Context.CurrentShoulderTransform.position - Context.ClosestPointOnColliderFromShoulder;
         Vector3 normalizedRayDirection = rayDirection.normalized;
         //prevent wall clipping

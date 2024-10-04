@@ -27,14 +27,13 @@ public class TouchState : EnvironmentInteractionState
         if (other.gameObject.layer == LayerMask.NameToLayer("Interactable"))
         {
             StartIKTargetPositionTracking(other);
-            Context.RotateHandTargetToWall(Context.CurrentBodySide, other);
         }
     }
 
     public override void OnTriggerStay(Collider other)
     {
+        StartIKTargetPositionTracking(other);
         UpdateIKTargetPosition(other);
-        Context.RotateHandTargetToWall(Context.CurrentBodySide, other);
     }
     public override void OnTriggerExit(Collider other)
     {

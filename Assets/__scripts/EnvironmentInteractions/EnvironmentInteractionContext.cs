@@ -18,10 +18,17 @@ public class EnvironmentInteractionContext
     private Transform _rootTransform;
     private Rig _environmentInteractionRig; 
 
-    private float _characterShoulderHeight;
+    private GameObject _characterShoulderHeight;
     //constructor
-    public EnvironmentInteractionContext(TwoBoneIKConstraint leftIKConstraint, MultiRotationConstraint leftMultiRotationConstraint, 
-        TwoBoneIKConstraint rightIKConstraint, MultiRotationConstraint rightMultiRotationConstraint, Rigidbody rigidbody, CapsuleCollider rootCollider, Transform rootTransform, Rig environmentInteractionRig)
+    public EnvironmentInteractionContext(TwoBoneIKConstraint leftIKConstraint, 
+        MultiRotationConstraint leftMultiRotationConstraint, 
+        TwoBoneIKConstraint rightIKConstraint, 
+        MultiRotationConstraint rightMultiRotationConstraint, 
+        Rigidbody rigidbody, 
+        CapsuleCollider rootCollider, 
+        Transform rootTransform, 
+        Rig environmentInteractionRig, 
+        GameObject characterShoulderHeight)
     {
         _leftIKConstraint = leftIKConstraint;
         _leftMultiRotationConstraint = leftMultiRotationConstraint;
@@ -31,7 +38,10 @@ public class EnvironmentInteractionContext
         _rootCollider = rootCollider;
         _rootTransform = rootTransform;
         _environmentInteractionRig = environmentInteractionRig;
-        _characterShoulderHeight = leftIKConstraint.data.root.transform.position.y-0.2f;
+        _characterShoulderHeight = characterShoulderHeight;
+        //leftIKConstraint.data.root.parent.gameObject
+        Debug.Log("Left IK constraint: " + leftIKConstraint.data.root);
+        // leftIKConstraint.data.root.parent.transform.position.y-0.2f;
 
         ResetAllWeights();
     }
@@ -46,7 +56,7 @@ public class EnvironmentInteractionContext
     public Transform RootTransform => _rootTransform;
     public Vector3 ClosestPointOnColliderFromShoulder { get; set; } = Vector3.positiveInfinity;
 
-    public float CharacterShoulderHeight => _characterShoulderHeight;
+    public GameObject CharacterShoulderHeight => _characterShoulderHeight;
     
     //current tracking for which side of body to activate hand-to-wall interaction
     public Collider CurrentIntersectingCollider { get; set; }
@@ -66,20 +76,21 @@ public class EnvironmentInteractionContext
     
     public void SetCurrentSide(Vector3 positionToCheck)
     {
-        Vector3 leftShoulder = _leftIKConstraint.data.root.transform.position;
-        Vector3 rightShoulder = _rightIKConstraint.data.root.transform.position;
+        Vector3 leftShoulder = _leftIKConstraint.data.root.parent.transform.position;
+        //Debug.Log("Constraing name:" + _leftIKConstraint.data.root.parent);
+        Vector3 rightShoulder = _rightIKConstraint.data.root.parent.transform.position;
 
         bool isLeftCloser = Vector3.Distance(positionToCheck, leftShoulder) < Vector3.Distance(positionToCheck, rightShoulder);
         if (isLeftCloser)
         {
-            Debug.Log("Left side is closer");
+            //Debug.Log("Left side is closer");
             CurrentBodySide = EBodySide.LEFT;
             CurrentIKConstraint = _leftIKConstraint;
             CurrentMultiRotationConstraint = _leftMultiRotationConstraint;
         }
         else
         {
-            Debug.Log("Right side is closer");
+            //Debug.Log("Right side is closer");
             CurrentBodySide = EBodySide.RIGHT;
             CurrentIKConstraint = _rightIKConstraint;
             CurrentMultiRotationConstraint = _rightMultiRotationConstraint;
@@ -132,35 +143,4 @@ public class EnvironmentInteractionContext
         _rightIKConstraint.weight = 0f;
         _rightMultiRotationConstraint.weight = 0f;
     }
-    
-    public void RotateHandTargetToWall(EBodySide side, Collider wallCollider)
-    {
-        // Find the closest point of interaction on the wall to the hand
-        Vector3 closestPoint = wallCollider.ClosestPoint(_rightIKConstraint.data.target.position);  // Use the right or left hand target as needed
-        Vector3 wallNormal;
-
-        // Use raycasting to get the normal of the wall at the closest point
-        if (Physics.Raycast(closestPoint, (_rightIKConstraint.data.target.position - closestPoint).normalized, out RaycastHit hit, 1.0f))
-        {
-            wallNormal = hit.normal;  // This is the correct wall surface normal
-        }
-        else
-        {
-            // Fallback if raycast doesn't work, use wallCollider's transform forward
-            wallNormal = wallCollider.transform.forward;
-        }
-
-        // Apply rotation based on the side of the body and wall normal
-        if (side == EBodySide.LEFT)
-        {
-            // Rotate the left hand to face the wall, assuming palm should be against the surface
-            _leftIKConstraint.data.target.rotation = Quaternion.LookRotation(wallNormal, Vector3.up);
-        }
-        else if (side == EBodySide.RIGHT)
-        {
-            // Rotate the right hand to face the wall, palm against the surface
-            _rightIKConstraint.data.target.rotation = Quaternion.LookRotation(wallNormal, Vector3.up);
-        }
-    }
-
 }
