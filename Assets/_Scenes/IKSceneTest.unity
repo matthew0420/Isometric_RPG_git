@@ -173,6 +173,7 @@ GameObject:
   - component: {fileID: 330585545}
   - component: {fileID: 330585544}
   - component: {fileID: 330585547}
+  - component: {fileID: 330585548}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -247,13 +248,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.96592605, z: -0, w: 0.2588184}
-  m_LocalPosition: {x: -3.88, y: 1.657, z: 3.65}
+  m_LocalRotation: {x: 0.31598538, y: 0.3596048, z: -0.13088542, w: 0.8681629}
+  m_LocalPosition: {x: -4.941, y: 6.351, z: -14.458}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 137083281}
-  m_LocalEulerAnglesHint: {x: 0, y: 150, z: 0}
+  m_LocalEulerAnglesHint: {x: 40, y: 45, z: 0}
 --- !u!114 &330585547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -298,6 +299,19 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!114 &330585548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330585543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30ac45c0578b1b045824f0f5b112aa91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 1279337746}
 --- !u!1 &375334704
 GameObject:
   m_ObjectHideFlags: 0
@@ -2236,6 +2250,7 @@ MonoBehaviour:
     m_Bits: 119
   headCollider: {fileID: 879677404}
   waistCollider: {fileID: 913285069}
+  punchDuration: 0.5
 --- !u!1 &1483246896
 GameObject:
   m_ObjectHideFlags: 0
@@ -2248,7 +2263,6 @@ GameObject:
   - component: {fileID: 1483246897}
   - component: {fileID: 1483246899}
   - component: {fileID: 1483246900}
-  - component: {fileID: 1483246901}
   m_Layer: 3
   m_Name: EnvironmentalInteractionRig
   m_TagString: Untagged
@@ -2340,6 +2354,7 @@ MonoBehaviour:
   _environmentInteractionRig: {fileID: 1483246897}
   boxCollider: {fileID: 1483246900}
   _characterShoulderHeight: {fileID: 918438923}
+  _characterController: {fileID: 1279337755}
 --- !u!65 &1483246900
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2361,25 +2376,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.5, y: 0.8084276, z: 0.506145}
   m_Center: {x: 0, y: 1.7397507, z: 0.2530725}
---- !u!114 &1483246901
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1483246896}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 432914d8b06eb5e46ba53fd12cdf0455, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  animator: {fileID: 0}
-  enableIK: 1
-  leftHandTarget: {fileID: 732820383}
-  rightHandTarget: {fileID: 1973404642}
-  wallMask:
-    m_Bits: 64
-  raycastDistance: 1.5
 --- !u!1 &1973404641
 GameObject:
   m_ObjectHideFlags: 0

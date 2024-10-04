@@ -8,7 +8,7 @@ public class CharacterController : MonoBehaviour
     public float crouchSpeed = 1.5f;
     public float rotationSpeed = 10f;
     public LayerMask groundMask;
-    
+
     public BoxCollider headCollider;    // Sphere collider near the head
     public BoxCollider waistCollider;   // Sphere collider at waist height
 
@@ -18,6 +18,12 @@ public class CharacterController : MonoBehaviour
     private bool objectCrouching = false;
     private float speed;
     private Vector3 moveDirection;
+    
+    private bool isPunching = false;
+    public bool IsPunching => isPunching;
+    
+    public float punchDuration = 5f; // Duration of the punch animation
+    private float punchTimer = 0f;
 
     void Start()
     {
@@ -25,7 +31,7 @@ public class CharacterController : MonoBehaviour
         capsuleCollider = GetComponent<CapsuleCollider>();
         rb.constraints = RigidbodyConstraints.FreezeRotation;
 
-        // Make sure the sphere colliders are disabled initially
+        // Ensure colliders are enabled initially
         headCollider.enabled = true;
         waistCollider.enabled = true;
     }
@@ -34,8 +40,17 @@ public class CharacterController : MonoBehaviour
     {
         HandleInput();
         UpdateAnimator();
-        RotatePlayer();
         CheckForCrouch();
+        
+        if (isPunching)
+        {
+            punchTimer += Time.deltaTime;
+            if (punchTimer >= punchDuration)
+            {
+                isPunching = false;
+                punchTimer = 0f;
+            }
+        }
     }
 
     void FixedUpdate()
@@ -45,20 +60,34 @@ public class CharacterController : MonoBehaviour
 
     void HandleInput()
     {
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
-
-        moveDirection = new Vector3(horizontal, 0, vertical).normalized;
-
-        if (Input.GetKeyDown(KeyCode.LeftControl))
+        if (Input.GetKeyDown(KeyCode.Mouse0) && !isPunching)
         {
-            isCrouching = !isCrouching;
-            AdjustColliderForCrouching();
+            isPunching = true;
+            animator.SetTrigger("Punch");
         }
 
-        speed = isCrouching ? crouchSpeed : walkSpeed;
+        if (!isPunching)
+        {
+            float horizontal = Input.GetAxis("Horizontal");
+            float vertical = Input.GetAxis("Vertical");
+
+            // Get movement input in world space
+            moveDirection = new Vector3(horizontal, 0, vertical).normalized;
+
+            if (Input.GetKeyDown(KeyCode.LeftControl))
+            {
+                isCrouching = !isCrouching;
+                AdjustColliderForCrouching();
+            }
+
+            speed = isCrouching ? crouchSpeed : walkSpeed;
+        }
+        else
+        {
+            moveDirection = Vector3.zero; // Stop movement while punching
+        }
     }
-    
+
     void AdjustColliderForCrouching()
     {
         if (isCrouching)
@@ -77,16 +106,22 @@ public class CharacterController : MonoBehaviour
     {
         if (moveDirection.magnitude >= 0.1f)
         {
-            Vector3 move = new Vector3(moveDirection.x, 0, moveDirection.z).normalized;
+            // Move in the direction of the camera's forward direction
+            Vector3 move = Camera.main.transform.TransformDirection(moveDirection);
+            move.y = 0;  // Flatten the movement so that it doesn't affect the y-axis
+
             rb.MovePosition(rb.position + move * (speed * Time.fixedDeltaTime));
+
+            RotatePlayer(move);  // Rotate to face the movement direction
         }
     }
 
-    void RotatePlayer()
+    void RotatePlayer(Vector3 direction)
     {
-        if (moveDirection.magnitude >= 0.1f)
+        // Rotate the player to face the movement direction
+        if (direction.magnitude >= 0.1f)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
         }
     }
@@ -96,6 +131,7 @@ public class CharacterController : MonoBehaviour
         float currentSpeed = moveDirection.magnitude * speed;
         animator.SetFloat("Speed", currentSpeed);
         animator.SetBool("isCrouching", isCrouching);
+        animator.SetBool("isPunching", isPunching);
     }
 
     // Check if head is blocked but waist is not, to allow crouching
@@ -110,25 +146,9 @@ public class CharacterController : MonoBehaviour
 
         // Check if head is blocked
         bool headBlocked = headHits.Length > 0;
-        if (headBlocked)
-        {
-            Debug.Log("Head is blocked by:");
-            foreach (Collider hit in headHits)
-            {
-                Debug.Log(hit.gameObject.name);  // Log the name of each object that blocked the head
-            }
-        }
 
         // Check if waist is clear
         bool waistClear = waistHits.Length == 0;
-        if (!waistClear)
-        {
-            Debug.Log("Waist is blocked by:");
-            foreach (Collider hit in waistHits)
-            {
-                Debug.Log(hit.gameObject.name);  // Log the name of each object that blocked the waist
-            }
-        }
 
         // Decide crouching based on headBlocked and waistClear
         if (headBlocked && waistClear)
@@ -144,5 +164,4 @@ public class CharacterController : MonoBehaviour
             AdjustColliderForCrouching();
         }
     }
-
 }

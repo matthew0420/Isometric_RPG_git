@@ -16,7 +16,8 @@ public class EnvironmentInteractionContext
     private Rigidbody _rigidbody; 
     private CapsuleCollider _rootCollider;
     private Transform _rootTransform;
-    private Rig _environmentInteractionRig; 
+    private Rig _environmentInteractionRig;
+    private CharacterController _characterController;
 
     private GameObject _characterShoulderHeight;
     //constructor
@@ -28,6 +29,7 @@ public class EnvironmentInteractionContext
         CapsuleCollider rootCollider, 
         Transform rootTransform, 
         Rig environmentInteractionRig, 
+        CharacterController characterController,
         GameObject characterShoulderHeight)
     {
         _leftIKConstraint = leftIKConstraint;
@@ -38,6 +40,7 @@ public class EnvironmentInteractionContext
         _rootCollider = rootCollider;
         _rootTransform = rootTransform;
         _environmentInteractionRig = environmentInteractionRig;
+        _characterController = characterController;
         _characterShoulderHeight = characterShoulderHeight;
         //leftIKConstraint.data.root.parent.gameObject
         Debug.Log("Left IK constraint: " + leftIKConstraint.data.root);
@@ -55,6 +58,8 @@ public class EnvironmentInteractionContext
     public CapsuleCollider Rootcollider => _rootCollider;
     public Transform RootTransform => _rootTransform;
     public Vector3 ClosestPointOnColliderFromShoulder { get; set; } = Vector3.positiveInfinity;
+
+    public CharacterController MyCharacterController => _characterController;
 
     public GameObject CharacterShoulderHeight => _characterShoulderHeight;
     

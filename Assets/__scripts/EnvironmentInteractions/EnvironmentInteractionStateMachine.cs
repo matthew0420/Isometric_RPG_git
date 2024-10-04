@@ -28,13 +28,14 @@ public class EnvironmentInteractionStateMachine : StateManager<EnvironmentIntera
     [SerializeField] private Rig _environmentInteractionRig;
     [SerializeField] private BoxCollider boxCollider;
     [SerializeField] private GameObject _characterShoulderHeight;
+    [SerializeField] private CharacterController _characterController;
 
     private void Awake()
     {
         ValidateConstraints();
 
         _context = new EnvironmentInteractionContext(_leftIKConstraint, _leftMultiRotationConstraint,
-            _rightIKConstraint, _rightMultiRotationConstraint, _rigidbody, _rootCollider, transform.root, _environmentInteractionRig, _characterShoulderHeight);
+            _rightIKConstraint, _rightMultiRotationConstraint, _rigidbody, _rootCollider, transform.root, _environmentInteractionRig, _characterController, _characterShoulderHeight);
         InitializeStates();
         //ConstructEnvironmentDetectionCollider();
     }
