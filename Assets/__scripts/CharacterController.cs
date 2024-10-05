@@ -99,8 +99,8 @@ public class CharacterController : MonoBehaviour
         }
         else
         {
-            capsuleCollider.height = 1.9f;
-            capsuleCollider.center = new Vector3(0, 0.9f, 0);
+            capsuleCollider.height = 1.85f;
+            capsuleCollider.center = new Vector3(0, 0.92f, 0);
         }
     }
 
