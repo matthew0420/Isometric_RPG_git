@@ -94,8 +94,8 @@ public class CharacterController : MonoBehaviour
     {
         if (isCrouching)
         {
-            capsuleCollider.height = 0.8f;
-            capsuleCollider.center = new Vector3(0, 0.4f, 0);
+            capsuleCollider.height = 1.3f;
+            capsuleCollider.center = new Vector3(0, 0.65f, 0);
         }
         else
         {
