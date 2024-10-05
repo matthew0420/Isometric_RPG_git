@@ -24,6 +24,7 @@ public class CharacterController : MonoBehaviour
     
     public float punchDuration = 5f; // Duration of the punch animation
     private float punchTimer = 0f;
+    public float gravity;
 
     void Start()
     {
@@ -56,6 +57,7 @@ public class CharacterController : MonoBehaviour
     void FixedUpdate()
     {
         MovePlayer();
+        rb.AddForce(Vector3.down * gravity * rb.mass);
     }
 
     void HandleInput()
@@ -104,7 +106,7 @@ public class CharacterController : MonoBehaviour
 
     void MovePlayer()
     {
-        if (moveDirection.magnitude >= 0.1f)
+        if (moveDirection.magnitude >= 0.05f)
         {
             // Move in the direction of the camera's forward direction
             Vector3 move = Camera.main.transform.TransformDirection(moveDirection);
