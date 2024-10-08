@@ -6,7 +6,6 @@ using UnityEngine.Assertions;
 //accepts Enum State (EState) generic
 public class EnvironmentInteractionStateMachine : StateManager<EnvironmentInteractionStateMachine.EEnvironmentInteractionState>
 {
-    //holds the different states involved in touching a wall as we walk near it
     public enum EEnvironmentInteractionState
     {
         Search,
@@ -37,10 +36,10 @@ public class EnvironmentInteractionStateMachine : StateManager<EnvironmentIntera
         _context = new EnvironmentInteractionContext(_leftIKConstraint, _leftMultiRotationConstraint,
             _rightIKConstraint, _rightMultiRotationConstraint, _rigidbody, _rootCollider, transform.root, _environmentInteractionRig, _characterController, _characterShoulderHeight);
         InitializeStates();
-        //ConstructEnvironmentDetectionCollider();
     }
     
     //error checking for serialize field assignments above
+    //need to add the rest
     private void ValidateConstraints()
     { 
         Assert.IsNotNull(_leftIKConstraint, "Left IK Constraint not assigned.");
@@ -61,15 +60,4 @@ public class EnvironmentInteractionStateMachine : StateManager<EnvironmentIntera
         States.Add(EEnvironmentInteractionState.Touch, new TouchState(_context, EEnvironmentInteractionState.Touch));
         CurrentState = States[EEnvironmentInteractionState.Reset];
     }
-    
-    //get reach of character, create collision detection for wall hand placement
-    /*private void ConstructEnvironmentDetectionCollider()
-    {
-        //setting a trigger collider to be in front of the player and at arm's length width for wall interactions
-        float wingspan = _rootCollider.height;
-        BoxCollider boxCollider = gameObject.AddComponent<BoxCollider>();
-        boxCollider.size = new Vector3(wingspan, wingspan, wingspan);
-        boxCollider.center = new Vector3(_rootCollider.center.x, _rootCollider.center.y + (.50f * wingspan), _rootCollider.center.z + (.5f * wingspan));
-        boxCollider.isTrigger = true;
-    }*/
 }
