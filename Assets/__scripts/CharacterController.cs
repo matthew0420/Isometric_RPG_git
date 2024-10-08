@@ -1,3 +1,5 @@
+using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider))]
@@ -9,6 +11,7 @@ public class CharacterController : MonoBehaviour
     public float rotationSpeed = 10f;
     public LayerMask groundMask;
 
+    public GameObject waterRipple;
     
     //since environment state machine handles hand interactions, and handles multiple stages of states,
     //I am doing foot IK here since it will act independently of what hand IK is doing
@@ -202,4 +205,36 @@ public class CharacterController : MonoBehaviour
             AdjustColliderForCrouching();
         }
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Water"))
+        {
+            waterRipple.SetActive(true);
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.CompareTag("Water"))
+        {
+            if (moveDirection.magnitude == 0)
+            {
+                waterRipple.SetActive(false);
+            }
+            else
+            {
+                waterRipple.SetActive(true);
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("Water"))
+        {
+            waterRipple.SetActive(false);
+        }
+    }
+    
 }
