@@ -9,8 +9,18 @@ public class CharacterController : MonoBehaviour
     public float rotationSpeed = 10f;
     public LayerMask groundMask;
 
-    public BoxCollider headCollider;    // Sphere collider near the head
-    public BoxCollider waistCollider;   // Sphere collider at waist height
+    
+    //since environment state machine handles hand interactions, and handles multiple stages of states,
+    //I am doing foot IK here since it will act independently of what hand IK is doing
+    //I would likely have an EnvironmentInteractionHand and EnvironmentInteractionFoot setup for state machines if I worked on this further
+    public Transform leftFoot; 
+    public Transform rightFoot; 
+    public float footOffset = 0.1f;  
+    public float footIKWeight = 1.0f; 
+    public float raycastDistance = 1.0f;
+
+    public BoxCollider headCollider;   
+    public BoxCollider waistCollider;  
 
     private Rigidbody rb;
     private CapsuleCollider capsuleCollider;
@@ -22,7 +32,7 @@ public class CharacterController : MonoBehaviour
     private bool isPunching = false;
     public bool IsPunching => isPunching;
     
-    public float punchDuration = 5f; // Duration of the punch animation
+    public float punchDuration = 5f; 
     private float punchTimer = 0f;
     public float gravity;
 
@@ -31,8 +41,7 @@ public class CharacterController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         capsuleCollider = GetComponent<CapsuleCollider>();
         rb.constraints = RigidbodyConstraints.FreezeRotation;
-
-        // Ensure colliders are enabled initially
+        
         headCollider.enabled = true;
         waistCollider.enabled = true;
     }
@@ -72,8 +81,7 @@ public class CharacterController : MonoBehaviour
         {
             float horizontal = Input.GetAxis("Horizontal");
             float vertical = Input.GetAxis("Vertical");
-
-            // Get movement input in world space
+            
             moveDirection = new Vector3(horizontal, 0, vertical).normalized;
 
             if (Input.GetKeyDown(KeyCode.LeftControl))
@@ -108,19 +116,18 @@ public class CharacterController : MonoBehaviour
     {
         if (moveDirection.magnitude >= 0.05f)
         {
-            // Move in the direction of the camera's forward direction
+            // Move in the direction of the camera's forward direction for isometric feel
             Vector3 move = Camera.main.transform.TransformDirection(moveDirection);
-            move.y = 0;  // Flatten the movement so that it doesn't affect the y-axis
+            move.y = 0;  
 
             rb.MovePosition(rb.position + move * (speed * Time.fixedDeltaTime));
 
-            RotatePlayer(move);  // Rotate to face the movement direction
+            RotatePlayer(move); 
         }
     }
 
     void RotatePlayer(Vector3 direction)
     {
-        // Rotate the player to face the movement direction
         if (direction.magnitude >= 0.1f)
         {
             Quaternion targetRotation = Quaternion.LookRotation(direction);
@@ -135,24 +142,53 @@ public class CharacterController : MonoBehaviour
         animator.SetBool("isCrouching", isCrouching);
         animator.SetBool("isPunching", isPunching);
     }
+    
+    void OnAnimatorIK(int layerIndex)
+    {
+        AdjustFootPosition(leftFoot, AvatarIKGoal.LeftFoot);
+        AdjustFootPosition(rightFoot, AvatarIKGoal.RightFoot);
+    }
+    
+    void AdjustFootPosition(Transform footTransform, AvatarIKGoal footGoal)
+    {
+        RaycastHit hit;
+        Vector3 footPosition = footTransform.position + Vector3.up * raycastDistance;
+        
+        if (Physics.Raycast(footPosition, Vector3.down, out hit, raycastDistance + footOffset, groundMask))
+        {
+            Vector3 targetFootPosition = hit.point;
+            targetFootPosition.y += footOffset; 
+            
+            animator.SetIKPositionWeight(footGoal, footIKWeight);
+            animator.SetIKPosition(footGoal, targetFootPosition);
 
+            // Calculate the foot's rotation to match the slope's normal
+            Vector3 footForward = Vector3.ProjectOnPlane(transform.forward, hit.normal).normalized;
+            Quaternion targetFootRotation = Quaternion.LookRotation(footForward, hit.normal);
+            
+            animator.SetIKRotationWeight(footGoal, footIKWeight);
+            animator.SetIKRotation(footGoal, targetFootRotation);
+        }
+        else
+        {
+            animator.SetIKPositionWeight(footGoal, 0);
+            animator.SetIKRotationWeight(footGoal, 0);
+        }
+    }
+    
     // Check if head is blocked but waist is not, to allow crouching
     void CheckForCrouch()
     {
         int playerLayer = LayerMask.NameToLayer("Player");
-        int layerMaskWithoutPlayer = groundMask & ~(1 << playerLayer);  // Exclude player layer from groundMask
-
-        // Perform OverlapSphere to detect if the head and waist hit any objects (excluding player layer)
+        int layerMaskWithoutPlayer = groundMask & ~(1 << playerLayer); 
+        
         Collider[] headHits = Physics.OverlapBox(headCollider.transform.position + headCollider.center, headCollider.size / 2, Quaternion.identity, layerMaskWithoutPlayer);
         Collider[] waistHits = Physics.OverlapBox(waistCollider.transform.position + waistCollider.center, waistCollider.size / 2, Quaternion.identity, layerMaskWithoutPlayer);
-
-        // Check if head is blocked
+        
         bool headBlocked = headHits.Length > 0;
-
-        // Check if waist is clear
+        
         bool waistClear = waistHits.Length == 0;
-
-        // Decide crouching based on headBlocked and waistClear
+        
         if (headBlocked && waistClear)
         {
             isCrouching = true;
