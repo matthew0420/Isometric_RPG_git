@@ -3,16 +3,17 @@ using UnityEngine.AI;
 
 public class Citizen : NPC
 {
-    public float walkRadius = 10f;
-    
+    public float walkRadius = 50f;
+
     // Define bitmask for walkable areas excluding water
     private int normalAreaMask;  // Default area for wandering (e.g., exclude water)
     private int fleeingAreaMask; // Fleeing mask (allow water access)
-
+    public GameObject waterRipple;
+    
     protected override void Start()
     {
         base.Start();
-        
+
         // Set area masks
         normalAreaMask = NavMesh.AllAreas & ~(1 << NavMesh.GetAreaFromName("Water")); // Avoid water when wandering
         fleeingAreaMask = NavMesh.AllAreas; // Allow all areas (including water) when fleeing
@@ -26,7 +27,7 @@ public class Citizen : NPC
     {
         Vector3 randomDirection = Random.insideUnitSphere * walkRadius;
         randomDirection += transform.position;
-        
+
         NavMeshHit hit;
         // Use the normalAreaMask to avoid water when wandering
         if (NavMesh.SamplePosition(randomDirection, out hit, walkRadius, normalAreaMask))
@@ -55,8 +56,42 @@ public class Citizen : NPC
         agent.areaMask = normalAreaMask;
     }
 
-    protected override void Update()
+    // Update animation based on movement
+    private void UpdateAnimation()
     {
-        base.Update();
+        float velocity = agent.velocity.magnitude;
+        
+        animator.SetFloat("Speed", velocity);
+    }
+    
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Water"))
+        {
+            waterRipple.SetActive(true);
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.CompareTag("Water"))
+        {
+            if (agent.velocity.magnitude == 0)
+            {
+                waterRipple.SetActive(false);
+            }
+            else
+            {
+                waterRipple.SetActive(true);
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("Water"))
+        {
+            waterRipple.SetActive(false);
+        }
     }
 }

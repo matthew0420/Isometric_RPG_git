@@ -5,7 +5,7 @@ public class Guard : NPC
 {
     public Transform[] patrolPoints;
     private int currentPatrolIndex = 0;
-
+    public GameObject waterRipple;
     protected override void Start()
     {
         base.Start();
@@ -35,5 +35,36 @@ public class Guard : NPC
     {
         base.Update();
         Patrol();
+    }
+    
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Water"))
+        {
+            waterRipple.SetActive(true);
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.CompareTag("Water"))
+        {
+            if (agent.velocity.magnitude == 0)
+            {
+                waterRipple.SetActive(false);
+            }
+            else
+            {
+                waterRipple.SetActive(true);
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("Water"))
+        {
+            waterRipple.SetActive(false);
+        }
     }
 }

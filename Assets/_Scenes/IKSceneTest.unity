@@ -304,7 +304,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 1929416064}
+  m_TargetTexture: {fileID: 481842413}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
@@ -7138,6 +7138,44 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!84 &481842413
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 5
+  m_Width: 1504
+  m_Height: 804
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 90
+  m_ColorFormat: 48
+  m_MipMap: 1
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_EnableRandomWrite: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!4 &483706941 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -2594260964506120097, guid: 2ddb490c1f8457d48adec4a3a9c42156,
@@ -22070,7 +22108,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 2ddb490c1f8457d48adec4a3a9c42156,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.24
+      value: -3.75
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2ddb490c1f8457d48adec4a3a9c42156,
         type: 3}
@@ -22080,7 +22118,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 2ddb490c1f8457d48adec4a3a9c42156,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -5.04
+      value: -5.13
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2ddb490c1f8457d48adec4a3a9c42156,
         type: 3}
@@ -22587,6 +22625,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walkRadius: 10
+  waterRipple: {fileID: 480120176}
 --- !u!195 &1838886080
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -22597,7 +22636,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 3.5
+  m_Speed: 2
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -22607,7 +22646,7 @@ NavMeshAgent:
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
-  m_WalkableMask: 4294967295
+  m_WalkableMask: 7
   m_ObstacleAvoidanceType: 4
 --- !u!136 &1838886081
 CapsuleCollider:
@@ -23135,44 +23174,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1786580183}
   m_PrefabAsset: {fileID: 0}
---- !u!84 &1929416064
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 5
-  m_Width: 1504
-  m_Height: 804
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 90
-  m_ColorFormat: 48
-  m_MipMap: 1
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_EnableRandomWrite: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!4 &1940705271 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -7219772299731422950, guid: 2ddb490c1f8457d48adec4a3a9c42156,
@@ -23422,7 +23423,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 3.5
+  m_Speed: 2
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -23451,6 +23452,7 @@ MonoBehaviour:
   - {fileID: 472878052}
   - {fileID: 660730403}
   - {fileID: 420298784}
+  waterRipple: {fileID: 995301986}
 --- !u!4 &1970634390 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5372056943023685468, guid: 2ddb490c1f8457d48adec4a3a9c42156,

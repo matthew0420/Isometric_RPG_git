@@ -22,7 +22,7 @@ public class NPC : MonoBehaviour
         if (!isRunning)
         {
             animator.SetBool("isRunning", false);
-            agent.speed = 3.5f; // Walking speed
+            agent.speed = 2f; // Walking speed
         }
     }
     
