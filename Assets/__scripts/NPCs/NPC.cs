@@ -21,7 +21,7 @@ public class NPC : MonoBehaviour
         agent.SetDestination(target);
         if (!isRunning)
         {
-            animator.SetBool("isRunning", false);
+            //could easily be set up to change in a different spot, currently hard coded
             agent.speed = 2f; // Walking speed
         }
     }

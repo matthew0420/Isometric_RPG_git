@@ -1,6 +1,9 @@
-using System;
-using Unity.VisualScripting;
 using UnityEngine;
+
+//since environment state machine handles hand interactions, and handles multiple stages of states,
+//I am doing foot IK here since it will act independently of what hand IK is doing
+//I would likely have an EnvironmentInteractionHand and EnvironmentInteractionFoot setup for state machines if I worked on this further
+// Animator and Movement Variables
 
 [RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider))]
 public class CharacterController : MonoBehaviour
@@ -9,24 +12,25 @@ public class CharacterController : MonoBehaviour
     public float walkSpeed = 3f;
     public float crouchSpeed = 1.5f;
     public float rotationSpeed = 10f;
+    public float gravity;
+    
     public LayerMask groundMask;
-
+    public LayerMask punchLayerMask;
+    
     public GameObject waterRipple;
     
-    //since environment state machine handles hand interactions, and handles multiple stages of states,
-    //I am doing foot IK here since it will act independently of what hand IK is doing
-    //I would likely have an EnvironmentInteractionHand and EnvironmentInteractionFoot setup for state machines if I worked on this further
     public Transform leftFoot; 
     public Transform rightFoot; 
     public float footOffset = 0.1f;  
     public float footIKWeight = 1.0f; 
     public float raycastDistance = 1.0f;
-
+    
     public BoxCollider headCollider;   
     public BoxCollider waistCollider;  
-
+    
     private Rigidbody rb;
     private CapsuleCollider capsuleCollider;
+    
     private bool isCrouching = false;
     private bool objectCrouching = false;
     private float speed;
@@ -34,10 +38,10 @@ public class CharacterController : MonoBehaviour
     
     private bool isPunching = false;
     public bool IsPunching => isPunching;
-    
-    public float punchDuration = 5f; 
+    public float punchDuration = 5f;
+    public float punchRange = 2f; 
     private float punchTimer = 0f;
-    public float gravity;
+
 
     void Start()
     {
@@ -78,6 +82,8 @@ public class CharacterController : MonoBehaviour
         {
             isPunching = true;
             animator.SetTrigger("Punch");
+            
+            PunchRaycast();
         }
 
         if (!isPunching)
@@ -97,7 +103,7 @@ public class CharacterController : MonoBehaviour
         }
         else
         {
-            moveDirection = Vector3.zero; // Stop movement while punching
+            moveDirection = Vector3.zero;
         }
     }
 
@@ -179,7 +185,6 @@ public class CharacterController : MonoBehaviour
         }
     }
     
-    // Check if head is blocked but waist is not, to allow crouching
     void CheckForCrouch()
     {
         int playerLayer = LayerMask.NameToLayer("Player");
@@ -206,6 +211,46 @@ public class CharacterController : MonoBehaviour
         }
     }
 
+    void PunchRaycast()
+    {
+        RaycastHit hit;
+        Vector3 rayOrigin = transform.position + Vector3.up * 1.5f;
+        Vector3 forward = transform.forward;
+
+        if (Physics.Raycast(rayOrigin, forward, out hit, punchRange, punchLayerMask))
+        {
+            GameObject hitObject = hit.collider.gameObject;
+            
+            if (hitObject.GetComponent<Guard>() != null || hitObject.GetComponent<Citizen>() != null)
+            {
+                NotifyNearbyNPCs();
+            }
+        }
+    }
+
+    void NotifyNearbyNPCs()
+    {
+        // Get all NPCs in the scene within a certain radius
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, 20f); // Change the radius as needed
+
+        foreach (var hitCollider in hitColliders)
+        {
+            Guard guard = hitCollider.GetComponent<Guard>();
+            Citizen citizen = hitCollider.GetComponent<Citizen>();
+            if (guard != null)
+            {
+                // Notify guards to attack the player
+                guard.NotifyToAttackPlayer(transform);
+            }
+
+            if (citizen != null)
+            {
+                citizen.FleeFromPlayer(transform);
+            }
+        }
+    }
+
+    
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Water"))
@@ -236,5 +281,5 @@ public class CharacterController : MonoBehaviour
             waterRipple.SetActive(false);
         }
     }
-    
 }
+
