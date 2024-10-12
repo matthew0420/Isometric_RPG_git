@@ -26,8 +26,7 @@ public class Guard : NPC
         base.Start();
         MoveTo(patrolPoints[currentPatrolIndex].position);
     }
-
-    // Patrol between waypoints
+    
     private void Patrol()
     {
         if (agent.remainingDistance < agent.stoppingDistance)
@@ -70,8 +69,7 @@ public class Guard : NPC
     protected override void Update()
     {
         base.Update();
-
-        // Switch between patrol and attack states
+        
         switch (currentState)
         {
             case GuardState.Patrolling:
@@ -82,8 +80,7 @@ public class Guard : NPC
                 break;
         }
     }
-
-    // This function is called by the player when they enter the NotifyNearbyNPCs area
+    
     public void NotifyToAttackPlayer(Transform playerTransform)
     {
         player = playerTransform;  
@@ -93,7 +90,7 @@ public class Guard : NPC
     //if player can escape, code goes here to handle reset
     public void NotifyToStopAttacking()
     {
-        currentState = GuardState.Patrolling;  // Return to patrol state
+        currentState = GuardState.Patrolling; 
     }
 
     // Handle water ripples 

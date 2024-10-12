@@ -8,7 +8,8 @@ public class NPC : MonoBehaviour
     protected Animator animator;
     protected Transform player;
     protected bool isRunning = false;
-    
+    private static readonly int Speed = Animator.StringToHash("Speed");
+
     protected virtual void Start()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -31,7 +32,7 @@ public class NPC : MonoBehaviour
     protected void UpdateAnimation()
     {
         float speed = agent.velocity.magnitude;
-        animator.SetFloat("Speed", speed);
+        animator.SetFloat(Speed, speed);
     }
 
     protected virtual void Update()
