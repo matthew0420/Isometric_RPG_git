@@ -9,12 +9,12 @@ using UnityEngine.AI;
 public class Citizen : NPC
 {
     public float walkRadius = 50f;
-
+    public float fleeDistance = 200f;
+    public GameObject waterRipple;
+    
     // Define bitmask for walkable areas excluding water
     private int normalAreaMask; 
     private int fleeingAreaMask; 
-    public float fleeDistance = 200f;
-    public GameObject waterRipple;
     
     protected override void Start()
     {
@@ -85,7 +85,6 @@ public class Citizen : NPC
 
         return transform.position + randomDirection * fleeDistance;
     }
-
     
     private void OnTriggerEnter(Collider other)
     {

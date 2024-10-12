@@ -1,19 +1,18 @@
-using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class FishWander : MonoBehaviour
 {
-    public float moveSpeed = 2f; 
-    public float turnSpeed = 2f; 
+    public float moveSpeed = 2f;
+    public float turnSpeed = 2f;
     public float directionChangeInterval = 3f;
-    public float fleeDistance = 5f; 
+    public float fleeDistance = 5f;
+    public BoxCollider pondBounds;
 
     private float initialY;
-    private Vector3 targetDirection;
     private float timer;
-    public BoxCollider pondBounds; 
-
+    private Vector3 targetDirection;
+    
     void Start()
     {
         //for pond fish we will keep their height the same, perhaps different kinds of fish would have different wander behavior
@@ -33,15 +32,16 @@ public class FishWander : MonoBehaviour
             ChangeDirection();
             timer = 0f;
         }
+
         KeepWithinBounds();
     }
-    
+
     void ChangeDirection()
     {
         float randomAngle = Random.Range(0f, 360f);
         targetDirection = new Vector3(Mathf.Sin(randomAngle), 0, Mathf.Cos(randomAngle));
     }
-    
+
     void CheckForFlee()
     {
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, fleeDistance);
@@ -69,11 +69,11 @@ public class FishWander : MonoBehaviour
             }
         }
     }
-    
+
     void KeepWithinBounds()
     {
         Bounds bounds = pondBounds.bounds;
-        
+
         if (!bounds.Contains(transform.position))
         {
             Vector3 centerOffset = (bounds.center - transform.position).normalized;

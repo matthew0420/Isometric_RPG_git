@@ -6,16 +6,15 @@ using UnityEngine;
 public class Guard : NPC
 {
     public Transform[] patrolPoints;
-    private int currentPatrolIndex = 0;
     public GameObject waterRipple;
-
     // Player detection and attack settings
+    public LayerMask detectionLayer;
     public float detectionRadius = 10.0f; // Detection radius for player
     public float attackRange = 2.0f;
     public float attackCooldown = 2.0f;
+    
     private float nextAttackTime = 0f;
-
-    public LayerMask detectionLayer;
+    private int currentPatrolIndex = 0;
 
     // States
     private enum GuardState { Patrolling, Attacking }
