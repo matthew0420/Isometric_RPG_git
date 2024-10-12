@@ -52,8 +52,7 @@ public class Citizen : NPC
         agent.areaMask = fleeingAreaMask;
         Vector3 directionAwayFromPlayer = (transform.position - playerTransform.position).normalized;
         Vector3 fleePosition = transform.position + directionAwayFromPlayer * fleeDistance;
-
-        // Check if the flee position is within the player's field of view (FoV)
+        
         if (IsPlayerLookingAtPosition(fleePosition, playerTransform))
         {
             fleePosition = FindHiddenPosition(playerTransform);
@@ -77,10 +76,8 @@ public class Citizen : NPC
     
     private Vector3 FindHiddenPosition(Transform playerTransform)
     {
-        // Find a random direction away from the player's current forward direction
         Vector3 randomDirection = Random.insideUnitSphere.normalized;
-
-        // Ensure the random direction is away from the player's view
+        
         if (Vector3.Dot(playerTransform.forward, randomDirection) > 0)
         {
             randomDirection = -randomDirection;

@@ -1,65 +1,88 @@
+using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class FishWander : MonoBehaviour
 {
-    public float speed = 2f; // Speed of the fish
-    public float changeDirectionInterval = 2f; // Time interval to change direction
-    public BoxCollider pondCollider; // Reference to the BoxCollider that defines the pond area
+    public float moveSpeed = 2f; 
+    public float turnSpeed = 2f; 
+    public float directionChangeInterval = 3f;
+    public float fleeDistance = 5f; 
 
-    private Vector3 targetPosition;
+    private float initialY;
+    private Vector3 targetDirection;
+    private float timer;
+    public BoxCollider pondBounds; 
 
-    private void Start()
+    void Start()
     {
-        // Set the initial target position
-        SetRandomTargetPosition();
-
-        // Start changing direction at intervals
-        InvokeRepeating(nameof(SetRandomTargetPosition), changeDirectionInterval, changeDirectionInterval);
+        //for pond fish we will keep their height the same, perhaps different kinds of fish would have different wander behavior
+        initialY = transform.position.y;
+        ChangeDirection();
     }
 
-    private void Update()
+    void Update()
     {
-        // Move towards the target position
-        MoveTowardsTarget();
+        CheckForFlee();
+        transform.Translate(Vector3.forward * (moveSpeed * Time.deltaTime));
+        Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
+        timer += Time.deltaTime;
+        if (timer >= directionChangeInterval)
+        {
+            ChangeDirection();
+            timer = 0f;
+        }
+        KeepWithinBounds();
+    }
+    
+    void ChangeDirection()
+    {
+        float randomAngle = Random.Range(0f, 360f);
+        targetDirection = new Vector3(Mathf.Sin(randomAngle), 0, Mathf.Cos(randomAngle));
+    }
+    
+    void CheckForFlee()
+    {
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, fleeDistance);
+        foreach (var hitCollider in hitColliders)
+        {
+            Transform rippleParticle = hitCollider.transform.Find("WaterRippleParticle");
+            if (rippleParticle != null && rippleParticle.gameObject.activeInHierarchy)
+            {
+                Vector3 fleeDirection = (transform.position - hitCollider.transform.position).normalized;
+                Vector3 potentialNewPosition = transform.position + fleeDirection * (moveSpeed * Time.deltaTime);
+                Bounds bounds = pondBounds.bounds;
+                if (!bounds.Contains(potentialNewPosition))
+                {
+                    Vector3 closestPoint = bounds.ClosestPoint(transform.position);
+                    Vector3 adjustedDirection = (closestPoint - transform.position).normalized;
+
+                    targetDirection = adjustedDirection;
+                }
+                else
+                {
+                    targetDirection = fleeDirection;
+                }
+
+                break; // Flee from the closest dangerous object found
+            }
+        }
+    }
+    
+    void KeepWithinBounds()
+    {
+        Bounds bounds = pondBounds.bounds;
+        
+        if (!bounds.Contains(transform.position))
+        {
+            Vector3 centerOffset = (bounds.center - transform.position).normalized;
+            targetDirection = new Vector3(centerOffset.x, 0, centerOffset.z);
+        }
     }
 
-    private void SetRandomTargetPosition()
+    private void LateUpdate()
     {
-        if (pondCollider != null)
-        {
-            // Get the bounds of the collider
-            Vector3 center = pondCollider.center + pondCollider.transform.position;
-            Vector3 size = pondCollider.size;
-
-            // Generate a random point within the bounds of the BoxCollider
-            float randomX = Random.Range(center.x - size.x / 2, center.x + size.x / 2);
-            float randomZ = Random.Range(center.z - size.z / 2, center.z + size.z / 2);
-            targetPosition = new Vector3(randomX, transform.position.y, randomZ);
-        }
-        else
-        {
-            Debug.LogWarning("Pond Collider not assigned!");
-        }
-    }
-
-    private void MoveTowardsTarget()
-    {
-        // Move the fish towards the target position
-        Vector3 direction = (targetPosition - transform.position).normalized;
-        transform.position += direction * speed * Time.deltaTime;
-
-        // Optional: Rotate the fish to face the movement direction
-        if (direction != Vector3.zero)
-        {
-            Quaternion lookRotation = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * speed * 2);
-        }
-
-        // Check if the fish reached the target position
-        if (Vector3.Distance(transform.position, targetPosition) < 0.1f)
-        {
-            // Set a new target position if close to the current target
-            SetRandomTargetPosition();
-        }
+        transform.position = new Vector3(transform.position.x, initialY, transform.position.z);
     }
 }

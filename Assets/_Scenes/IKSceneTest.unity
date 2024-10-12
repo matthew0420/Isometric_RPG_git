@@ -365,9 +365,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 378ad87b3a1331c4f9fbea87a493a461, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
-  changeDirectionInterval: 20
-  pondCollider: {fileID: 922320039}
+  moveSpeed: 2
+  turnSpeed: 2
+  directionChangeInterval: 3
+  fleeDistance: 5
+  pondBounds: {fileID: 922320039}
 --- !u!4 &27579866 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3183749884578473501, guid: 2ddb490c1f8457d48adec4a3a9c42156,
@@ -659,7 +661,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 430493594}
+  m_TargetTexture: {fileID: 1081598444}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
@@ -1285,9 +1287,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 378ad87b3a1331c4f9fbea87a493a461, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
-  changeDirectionInterval: 20
-  pondCollider: {fileID: 922320039}
+  moveSpeed: 2
+  turnSpeed: 2
+  directionChangeInterval: 3
+  fleeDistance: 5
+  pondBounds: {fileID: 922320039}
 --- !u!4 &246185843 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 608321761475470972, guid: 2ddb490c1f8457d48adec4a3a9c42156,
@@ -1644,9 +1648,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 378ad87b3a1331c4f9fbea87a493a461, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
-  changeDirectionInterval: 20
-  pondCollider: {fileID: 922320039}
+  moveSpeed: 2
+  turnSpeed: 2
+  directionChangeInterval: 3
+  fleeDistance: 5
+  pondBounds: {fileID: 922320039}
 --- !u!1 &299428752 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 80d8ea6bc9349ea4caf68492a652bb6d,
@@ -2157,9 +2163,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 378ad87b3a1331c4f9fbea87a493a461, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
-  changeDirectionInterval: 20
-  pondCollider: {fileID: 922320039}
+  moveSpeed: 2
+  turnSpeed: 2
+  directionChangeInterval: 3
+  fleeDistance: 5
+  pondBounds: {fileID: 922320039}
 --- !u!4 &322830605 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8191740002585371210, guid: 2ddb490c1f8457d48adec4a3a9c42156,
@@ -2929,44 +2937,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 313522875}
   m_PrefabAsset: {fileID: 0}
---- !u!84 &430493594
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 5
-  m_Width: 1504
-  m_Height: 804
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 90
-  m_ColorFormat: 48
-  m_MipMap: 1
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_EnableRandomWrite: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!4 &430934307 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -1812909498023395591, guid: 2ddb490c1f8457d48adec4a3a9c42156,
@@ -16876,7 +16846,7 @@ GameObject:
   - component: {fileID: 922320040}
   - component: {fileID: 922320039}
   m_Layer: 4
-  m_Name: BoidCollider
+  m_Name: PondCollider
   m_TagString: Water
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16901,8 +16871,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 6.910448, y: 0.13168544, z: 4.2537093}
-  m_Center: {x: -0.47540092, y: -0.06584272, z: 0.13918948}
+  m_Size: {x: 6.910448, y: 0.11784059, z: 4.2537093}
+  m_Center: {x: -0.47540092, y: -0.058920294, z: 0.13918948}
 --- !u!4 &922320040
 Transform:
   m_ObjectHideFlags: 0
@@ -27852,6 +27822,44 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1279337746}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+--- !u!84 &1081598444
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 5
+  m_Width: 1505
+  m_Height: 799
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 90
+  m_ColorFormat: 48
+  m_MipMap: 1
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_EnableRandomWrite: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!4 &1083501010 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1564860333797465651, guid: 2ddb490c1f8457d48adec4a3a9c42156,
@@ -27882,9 +27890,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 378ad87b3a1331c4f9fbea87a493a461, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
-  changeDirectionInterval: 20
-  pondCollider: {fileID: 922320039}
+  moveSpeed: 2
+  turnSpeed: 2
+  directionChangeInterval: 3
+  fleeDistance: 5
+  pondBounds: {fileID: 922320039}
 --- !u!1 &1099638689 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6888117668986090000, guid: 158252f155361c1468d30bd6f2e186ed,
@@ -30385,9 +30395,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 378ad87b3a1331c4f9fbea87a493a461, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
-  changeDirectionInterval: 20
-  pondCollider: {fileID: 922320039}
+  moveSpeed: 2
+  turnSpeed: 2
+  directionChangeInterval: 3
+  fleeDistance: 5
+  pondBounds: {fileID: 922320039}
 --- !u!4 &1586695191 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6000407479487422213, guid: 2ddb490c1f8457d48adec4a3a9c42156,
