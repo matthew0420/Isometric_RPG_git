@@ -7,26 +7,24 @@ public class RippleEffect : MonoBehaviour
 {
     public int TextureSize = 512;
     public RenderTexture ObjectsRT;
-    private RenderTexture CurrRT, PrevRT, TempRT;
     public Shader RippleShader, AddShader;
+    
+    private RenderTexture CurrRT, PrevRT, TempRT;
     private Material RippleMat, AddMat;
-    // Start is called before the first frame update
+    
     void Start()
     {
-        //Creating render textures and materials
         CurrRT = new RenderTexture(TextureSize, TextureSize, 0, RenderTextureFormat.RFloat);
         PrevRT = new RenderTexture(TextureSize, TextureSize, 0, RenderTextureFormat.RFloat);
         TempRT = new RenderTexture(TextureSize, TextureSize, 0, RenderTextureFormat.RFloat);
         RippleMat = new Material(RippleShader);
         AddMat = new Material(AddShader);
-
-        //Change the texture in the material of this object to the render texture calculated by the ripple shader.
+        
         GetComponent<Renderer>().material.SetTexture("_RippleTex", CurrRT);
 
         StartCoroutine(ripples());
     }
-
-    // Update is called once per frame
+    
     IEnumerator ripples()
     {
         //Copy the result of blending the render textures to TempRT.

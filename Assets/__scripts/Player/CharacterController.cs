@@ -3,12 +3,15 @@ using UnityEngine;
 //since environment state machine handles hand interactions, and handles multiple stages of states,
 //I am doing foot IK here since it will act independently of what hand IK is doing
 //I would likely have an EnvironmentInteractionHand and EnvironmentInteractionFoot setup for state machines if I worked on this further
-// Animator and Movement Variables
 
+//Charactercontroller scripts can be notorious for becoming large and messy, and handling too many things
+//I would likely begin breaking up this class as the needs change for this project
 [RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider))]
 public class CharacterController : MonoBehaviour
 {
     public Animator animator;
+
+    // Movement
     public float walkSpeed = 3f;
     public float crouchSpeed = 1.5f;
     public float rotationSpeed = 10f;
@@ -18,7 +21,8 @@ public class CharacterController : MonoBehaviour
     public LayerMask punchLayerMask;
     
     public GameObject waterRipple;
-    
+
+    // Foot IK
     public Transform leftFoot; 
     public Transform rightFoot; 
     public float footOffset = 0.1f;  
@@ -30,19 +34,20 @@ public class CharacterController : MonoBehaviour
     
     private Rigidbody rb;
     private CapsuleCollider capsuleCollider;
-    
+
+    //state Variables
     private bool isCrouching = false;
     private bool objectCrouching = false;
     private float speed;
     private Vector3 moveDirection;
-    
     private bool isPunching = false;
     public bool IsPunching => isPunching;
+
+    //punching variables
     public float punchDuration = 5f;
     public float punchRange = 2f; 
     private float punchTimer = 0f;
-
-
+    
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -194,7 +199,6 @@ public class CharacterController : MonoBehaviour
         Collider[] waistHits = Physics.OverlapBox(waistCollider.transform.position + waistCollider.center, waistCollider.size / 2, Quaternion.identity, layerMaskWithoutPlayer);
         
         bool headBlocked = headHits.Length > 0;
-        
         bool waistClear = waistHits.Length == 0;
         
         if (headBlocked && waistClear)
