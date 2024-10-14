@@ -1,4 +1,5 @@
 Setup
+
 • isometric perspective camera. No rotation, no zoom in/out
 
 • a water shader that reacts to the player character’s movement, that has refraction, and 
